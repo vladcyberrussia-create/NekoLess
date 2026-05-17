@@ -52,11 +52,12 @@ android {
     productFlavors {
         create("fdroid") {
             dimension = "distribution"
-            applicationIdSuffix = ".fdroid"
+            manifestPlaceholders["app_name"] = "NekoLess"
             buildConfigField("String", "DISTRIBUTION", "\"F-Droid\"")
         }
         create("playstore") {
             dimension = "distribution"
+            manifestPlaceholders["app_name"] = "NekoLess"
             buildConfigField("String", "DISTRIBUTION", "\"Play Store\"")
         }
     }
@@ -92,7 +93,7 @@ android {
                 .map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
                 .forEach { output ->
                     val abi = output.getFilter("ABI") ?: "universal"
-                    output.outputFileName = "v2rayNG_${variant.versionName}-fdroid_${abi}.apk"
+                    output.outputFileName = "NekoLess_${variant.versionName}_${abi}.apk"
                     if (versionCodes.containsKey(abi)) {
                         output.versionCodeOverride =
                             (100 * variant.versionCode + versionCodes[abi]!!).plus(5000000)
@@ -107,12 +108,8 @@ android {
             variant.outputs
                 .map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
                 .forEach { output ->
-                    val abi = if (output.getFilter("ABI") != null)
-                        output.getFilter("ABI")
-                    else
-                        "universal"
-
-                    output.outputFileName = "v2rayNG_${variant.versionName}_${abi}.apk"
+                    val abi = output.getFilter("ABI") ?: "universal"
+                    output.outputFileName = "NekoLess_${variant.versionName}_${abi}.apk"
                     if (versionCodes.containsKey(abi)) {
                         output.versionCodeOverride =
                             (1000000 * versionCodes[abi]!!).plus(variant.versionCode)
@@ -137,10 +134,7 @@ android {
 }
 
 dependencies {
-    // Core Libraries
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
-
-    // AndroidX Core Libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity)
@@ -150,43 +144,25 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.fragment)
-
-    // UI Libraries
     implementation(libs.material)
     implementation(libs.toasty)
     implementation(libs.editorkit)
     implementation(libs.flexbox)
-
-    // Data and Storage Libraries
     implementation(libs.mmkv.static)
     implementation(libs.gson)
     implementation(libs.okhttp)
-
-    // Reactive and Utility Libraries
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
-
-    // Language and Processing Libraries
     implementation(libs.language.base)
     implementation(libs.language.json)
-
-    // Intent and Utility Libraries
     implementation(libs.quickie.foss)
     implementation(libs.core)
-
-    // AndroidX Lifecycle and Architecture Components
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.runtime.ktx)
-
-    // Background Task Libraries
     implementation(libs.work.runtime.ktx)
     implementation(libs.work.multiprocess)
-
-    // Multidex Support
     implementation(libs.multidex)
-
-    // Testing Libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
